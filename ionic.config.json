@@ -1,0 +1,7 @@
+{
+  "name": "MidtermWeatherApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
