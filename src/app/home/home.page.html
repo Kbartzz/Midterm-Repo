@@ -9,6 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
+  <!-- Side Menu -->
 <ion-menu side="start" menuId="settingsMenu" contentId="main-content">
   <ion-header>
     <ion-toolbar color="primary">
@@ -31,7 +32,6 @@
         <ion-label>Dark Mode</ion-label>
         <ion-toggle [(ngModel)]="darkMode" (ionChange)="toggleDarkMode()"></ion-toggle>
       </ion-item>
-
       <ion-item>
         <ion-label>Severe Weather Notifications</ion-label>
         <ion-toggle [(ngModel)]="notificationsEnabled" (ionChange)="toggleNotifications()"></ion-toggle>
@@ -40,6 +40,7 @@
   </ion-content>
 </ion-menu>
 
+  <!-- offline -->
 <ion-chip color="warning" *ngIf="isOffline">
   <ion-label>Offline: Showing cached weather</ion-label>
 </ion-chip>
@@ -50,7 +51,7 @@
     <p>No cached weather data available.</p>
   </div>
   
-  <!-- User's Location -->
+  <!-- Current Location -->
   <div class="weather-container" *ngIf="weatherData">
     <p *ngIf="isUsingCurrentLocation">Current location:</p>
     <p *ngIf="!isUsingCurrentLocation">Showing forecast for: {{ city }}</p>
@@ -77,7 +78,7 @@
       </div>
     </div>
 
-    <!-- Weekly Forecast -->
+    <!-- 5-day Forecast -->
     <div class="weekly-forecast" *ngIf="forecastData">
       <h3>5-Day Forecast</h3>
       <div *ngFor="let day of forecastData.list; let i = index">

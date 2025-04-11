@@ -141,7 +141,7 @@ export class HomePage {
     }
   }
 
-  /** Fetch Weather by City Name **/
+  // Fetch Weather by City Name
   searchCity(city: string) {
     this.city = city;
     this.isUsingCurrentLocation = false;
@@ -175,7 +175,7 @@ export class HomePage {
 
   }
 
-  /** Fetch Weather for a Specific City **/
+  // Fetch Weather for a Specific City 
   getWeatherByCity() {
     this.weatherService.getWeather(this.city, this.temperatureUnit).subscribe(
       data => {
@@ -192,7 +192,7 @@ export class HomePage {
       data => {
         this.forecastData = data;
 
-        // Extract today's hourly forecast
+        // hourly forecast
         const today = new Date().toISOString().split('T')[0];
         this.hourlyData = data.list.filter((item: any) => item.dt_txt.startsWith(today));
 
@@ -209,7 +209,6 @@ export class HomePage {
       this.searchCity(value.trim());
     }
     if (!value || value.trim().length === 0) {
-      // If search is cleared, fetch weather for current location
       this.getCurrentLocation();
       return;
     }
@@ -260,7 +259,7 @@ export class HomePage {
 
 
 
-  /** Get Weather Icon Based on Condition **/
+  //Get Weather Icon Based on Condition
   getWeatherIcon(weather: string): string {
     switch (weather.toLowerCase()) {
       case 'clear':
