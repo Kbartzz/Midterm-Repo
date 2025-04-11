@@ -1,20 +1,60 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <ion-title>Weather App</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding custom-bg">
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <ion-searchbar (ionInput)="onSearch($event)" placeholder="Enter city"></ion-searchbar>
+
+  <ion-toggle (ionChange)="toggleDarkMode()">Dark Mode</ion-toggle>
+
+  <!-- Unit -->
+  <ion-segment [(ngModel)]="temperatureUnit" (ionChange)="toggleTemperatureUnit()">
+    <ion-segment-button value="metric">°C</ion-segment-button>
+    <ion-segment-button value="imperial">°F</ion-segment-button>
+  </ion-segment>
+
+  <!-- Notification -->
+  <ion-toggle [(ngModel)]="notificationsEnabled" (ionChange)="toggleNotifications()">
+    Severe Weather Notifications
+  </ion-toggle>
+  
+  <!-- User's Location -->
+  <div class="weather-container" *ngIf="weatherData">
+    <p *ngIf="isUsingCurrentLocation">Current location:</p>
+    <p *ngIf="!isUsingCurrentLocation">Showing forecast for: {{ city }}</p>
+    <h2 class="city">{{ weatherData?.name }}</h2>
+    <h1 class="temperature">{{ weatherData?.main?.temp }}°{{ temperatureUnit === 'metric' ? 'C' : 'F' }}</h1>
+    <p class="weather-desc">{{ weatherData?.weather[0]?.description | titlecase }}</p>
+    <ion-chip color="warning" *ngIf="isOffline">
+      <ion-label>Offline: Showing cached weather</ion-label>
+    </ion-chip>
+
+    <!-- Hourly Forecast -->
+    <div class="hourly-forecast" *ngIf="hourlyData.length > 0">
+      <div class="hourly-scroll">
+        <div *ngFor="let hour of hourlyData" class="hourly-item">
+          <p>{{ hour.dt_txt | date: 'shortTime' }}</p>
+          <img [src]="'https://openweathermap.org/img/wn/' + hour.weather[0].icon + '@2x.png'" alt="weather icon" />
+          <p>{{ hour.weather[0].description }}</p>
+          <p>{{ hour.main.temp }}°{{ temperatureUnit === 'metric' ? 'C' : 'F' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly Forecast -->
+    <div class="weekly-forecast" *ngIf="forecastData">
+      <h3>5-Day Forecast</h3>
+      <div *ngFor="let day of forecastData.list; let i = index">
+        <div *ngIf="i % 8 === 0">
+          <h4>{{ day.dt_txt | date: 'EEEE' }} - {{ day.main.temp }}°{{ temperatureUnit === 'metric' ? 'C' : 'F' }}</h4>
+          <img [src]="'https://openweathermap.org/img/wn/' + day.weather[0].icon + '@2x.png'" alt="weather icon" />
+          <p>{{ day.weather[0].description }}</p>
+        </div>
+      </div>
+    </div>
   </div>
+
 </ion-content>
