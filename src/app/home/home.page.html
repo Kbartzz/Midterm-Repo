@@ -1,25 +1,54 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Weather App</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button>
+        <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+      </ion-menu-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
+<ion-menu side="start" menuId="settingsMenu" contentId="main-content">
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>Settings</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-list>
+      <ion-item>
+        <ion-label>Temperature Unit</ion-label>
+      </ion-item>
+      <ion-item lines="full">
+        <ion-segment [(ngModel)]="temperatureUnit" (ionChange)="toggleTemperatureUnit()">
+          <ion-segment-button value="metric">°C</ion-segment-button>
+          <ion-segment-button value="imperial">°F</ion-segment-button>
+        </ion-segment>
+      </ion-item>
+      <ion-item>
+        <ion-label>Dark Mode</ion-label>
+        <ion-toggle [(ngModel)]="darkMode" (ionChange)="toggleDarkMode()"></ion-toggle>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Severe Weather Notifications</ion-label>
+        <ion-toggle [(ngModel)]="notificationsEnabled" (ionChange)="toggleNotifications()"></ion-toggle>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-chip color="warning" *ngIf="isOffline">
+  <ion-label>Offline: Showing cached weather</ion-label>
+</ion-chip>
+<ion-router-outlet id="main-content"></ion-router-outlet>
 <ion-content class="ion-padding custom-bg">
-
   <ion-searchbar (ionInput)="onSearch($event)" placeholder="Enter city"></ion-searchbar>
-
-  <ion-toggle (ionChange)="toggleDarkMode()">Dark Mode</ion-toggle>
-
-  <!-- Unit -->
-  <ion-segment [(ngModel)]="temperatureUnit" (ionChange)="toggleTemperatureUnit()">
-    <ion-segment-button value="metric">°C</ion-segment-button>
-    <ion-segment-button value="imperial">°F</ion-segment-button>
-  </ion-segment>
-
-  <!-- Notification -->
-  <ion-toggle [(ngModel)]="notificationsEnabled" (ionChange)="toggleNotifications()">
-    Severe Weather Notifications
-  </ion-toggle>
+  <div *ngIf="!weatherData">
+    <p>No cached weather data available.</p>
+  </div>
   
   <!-- User's Location -->
   <div class="weather-container" *ngIf="weatherData">
@@ -27,7 +56,11 @@
     <p *ngIf="!isUsingCurrentLocation">Showing forecast for: {{ city }}</p>
     <h2 class="city">{{ weatherData?.name }}</h2>
     <h1 class="temperature">{{ weatherData?.main?.temp }}°{{ temperatureUnit === 'metric' ? 'C' : 'F' }}</h1>
+    <img [src]="'https://openweathermap.org/img/wn/' + weatherData.weather[0].icon + '@2x.png'" alt="weather icon" />
     <p class="weather-desc">{{ weatherData?.weather[0]?.description | titlecase }}</p>
+    <p><ion-icon name="water-outline"></ion-icon> Humidity: {{ weatherData?.main?.humidity }}%
+      <ion-icon name="swap-horizontal-outline"></ion-icon>Wind: {{ weatherData?.wind?.speed }} m/s
+    </p>
     <ion-chip color="warning" *ngIf="isOffline">
       <ion-label>Offline: Showing cached weather</ion-label>
     </ion-chip>

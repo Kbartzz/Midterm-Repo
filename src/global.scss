@@ -36,19 +36,19 @@
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
 :root {
-    // existing colors...
-    --ion-color-primary: #808080;
-    --custom-text-light: #000000;
-    --custom-text-dark: #ffffff;
-  }
-  
-  // 🌙 Dark mode overrides
-  body.dark {
-    --ion-text-color: #ffffff;
-    --ion-color-primary: #808080;
-   --ion-background-color: #1e1e1e;
-    --custom-text-light: #ffffff;
-    --handle-background-checked: #808080;
-    --background-checked: #666; 
-  }
+  // existing colors...
+  --ion-color-primary: #808080;
+  --custom-text-light: #000000;
+  --custom-text-dark: #ffffff;
+}
+
+// 🌙 Dark mode overrides
+body.dark {
+  --ion-text-color: #ffffff;
+  --ion-color-primary: #808080;
+ --ion-background-color: #1e1e1e;
+  --custom-text-light: #ffffff;
+  --handle-background-checked: #808080;
+  --background-checked: #666; 
+}
 
