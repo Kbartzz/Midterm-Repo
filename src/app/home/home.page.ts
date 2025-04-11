@@ -29,7 +29,7 @@ export class HomePage {
 
     this.checkConnectivity();
 
-    // 🌐 Re-check on connection change
+    // Re-check on connection change
     window.addEventListener('online', () => this.checkConnectivity());
     window.addEventListener('offline', () => this.checkConnectivity());
   }
