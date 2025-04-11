@@ -21,15 +21,11 @@ export class HomePage {
   isUsingCurrentLocation: boolean = true;
   isOffline: boolean = false;
 
-
-
   constructor(private weatherService: WeatherService) { }
 
   ngOnInit() {
 
     this.checkConnectivity();
-
-    // Re-check on connection change
     window.addEventListener('online', () => this.checkConnectivity());
     window.addEventListener('offline', () => this.checkConnectivity());
   }
@@ -80,7 +76,7 @@ export class HomePage {
     }
   }
 
-  //Get User's Current Location
+  //Current Location
   async getCurrentLocation() {
     try {
       const coordinates = await Geolocation.getCurrentPosition();
@@ -101,7 +97,7 @@ export class HomePage {
     }
   }
 
-  // Fetch Current Weather Based on Coordinates
+  // Weather by Coordinates
   getWeatherByCoords() {
     if (this.latitude !== null && this.longitude !== null) {
       this.weatherService.getWeatherByCoords(this.latitude!, this.longitude!, this.temperatureUnit).subscribe(
@@ -117,7 +113,7 @@ export class HomePage {
     }
   }
 
-  // Get 5-day Weather Forecast & Today's Hourly Data
+  // 5 day and hourly forecast
   getWeatherForecastByCoords() {
     if (this.latitude !== null && this.longitude !== null) {
       this.weatherService.getForecastByCoords(this.latitude, this.longitude, this.temperatureUnit).subscribe(
@@ -141,7 +137,7 @@ export class HomePage {
     }
   }
 
-  // Fetch Weather by City Name
+  // Weather by City Name
   searchCity(city: string) {
     this.city = city;
     this.isUsingCurrentLocation = false;
@@ -175,7 +171,7 @@ export class HomePage {
 
   }
 
-  // Fetch Weather for a Specific City 
+  // Weather by city
   getWeatherByCity() {
     this.weatherService.getWeather(this.city, this.temperatureUnit).subscribe(
       data => {
@@ -259,7 +255,7 @@ export class HomePage {
 
 
 
-  //Get Weather Icon Based on Condition
+  // Iconz
   getWeatherIcon(weather: string): string {
     switch (weather.toLowerCase()) {
       case 'clear':

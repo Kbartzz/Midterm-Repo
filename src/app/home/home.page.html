@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-  <!-- Side Menu -->
+<!-- Side Menu -->
 <ion-menu side="start" menuId="settingsMenu" contentId="main-content">
   <ion-header>
     <ion-toolbar color="primary">
@@ -40,7 +40,7 @@
   </ion-content>
 </ion-menu>
 
-  <!-- offline -->
+<!-- offline -->
 <ion-chip color="warning" *ngIf="isOffline">
   <ion-label>Offline: Showing cached weather</ion-label>
 </ion-chip>
@@ -50,7 +50,7 @@
   <div *ngIf="!weatherData">
     <p>No cached weather data available.</p>
   </div>
-  
+
   <!-- Current Location -->
   <div class="weather-container" *ngIf="weatherData">
     <p *ngIf="isUsingCurrentLocation">Current location:</p>
