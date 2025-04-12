@@ -34,7 +34,6 @@ export class HomePage {
     this.isOffline = !navigator.onLine;
 
     if (this.isOffline) {
-      console.warn('Offline mode – loading cached weather');
       this.loadCachedWeather();
     } else {
       this.getCurrentLocation();
@@ -103,8 +102,7 @@ export class HomePage {
       this.weatherService.getWeatherByCoords(this.latitude!, this.longitude!, this.temperatureUnit).subscribe(
         data => {
           this.weatherData = data;
-          localStorage.setItem('cachedWeatherData', JSON.stringify(data));
-          console.log('Current Weather:', data);
+          this.saveCachedWeather(data);
         },
         error => {
           console.error('Error fetching weather:', error);
@@ -119,8 +117,6 @@ export class HomePage {
       this.weatherService.getForecastByCoords(this.latitude, this.longitude, this.temperatureUnit).subscribe(
         data => {
           this.forecastData = data;
-          localStorage.setItem('cachedForecastData', JSON.stringify(data));
-          console.log('5-Day Forecast (coords):', data);
 
           const now = new Date();
           this.hourlyData = data.list.filter((item: any) => {
@@ -145,6 +141,7 @@ export class HomePage {
     this.weatherService.getWeather(this.city, this.temperatureUnit).subscribe(
       data => {
         this.weatherData = data;
+        this.saveCachedWeather(data);
         console.log('Weather by City:', data);
       },
       error => {
@@ -176,7 +173,7 @@ export class HomePage {
     this.weatherService.getWeather(this.city, this.temperatureUnit).subscribe(
       data => {
         this.weatherData = data;
-        localStorage.setItem('cachedWeatherData', JSON.stringify(data));
+        this.saveCachedWeather(data);
         console.log('Weather for:', this.city, data);
       },
       error => {
@@ -212,16 +209,15 @@ export class HomePage {
     this.searchCity(value.trim());
   }
 
-
-
   loadCachedWeather() {
+    if (!this.isOffline) return;
+
     const cachedWeather = localStorage.getItem('cachedWeatherData');
-    const cachedForecast = localStorage.getItem('cachedForecastData');
     const cachedLat = localStorage.getItem('lastLatitude');
     const cachedLon = localStorage.getItem('lastLongitude');
 
+    console.log('Offline mode: Attempting to load cached weather...');
     console.log('cachedWeatherData:', cachedWeather);
-    console.log('cachedForecastData:', cachedForecast);
     console.log('cachedLat:', cachedLat, 'cachedLon:', cachedLon);
 
     if (cachedLat && cachedLon) {
@@ -231,26 +227,35 @@ export class HomePage {
     }
 
     if (cachedWeather) {
-      this.weatherData = JSON.parse(cachedWeather);
-      this.city = this.weatherData?.name || this.city;
-      console.log('Loaded cached weather data');
+      const parsed = JSON.parse(cachedWeather);
+      this.weatherData = {
+        name: parsed.name,
+        main: {
+          temp: parsed.temp
+        },
+        weather: [{
+          description: parsed.description,
+          icon: parsed.icon
+        }]
+      };
+      this.city = parsed.name;
+      this.temperatureUnit = parsed.unit || 'metric';
+
+      console.log('Offline: Loaded cached current weather:', this.weatherData);
+    } else {
+      console.warn('Offline: No cached weather data found.');
     }
+  }
 
-    if (cachedForecast) {
-      this.forecastData = JSON.parse(cachedForecast);
-
-      const now = new Date();
-      this.hourlyData = this.forecastData.list.filter((item: any) => {
-        const forecastTime = new Date(item.dt_txt + ' UTC');
-        return forecastTime > now;
-      }).slice(0, 8);
-
-      console.log('Loaded cached forecast data');
-      console.log('Offline cachedLatitude:', cachedLat);
-      console.log('Offline cachedLongitude:', cachedLon);
-      console.log('Offline weather:', this.weatherData);
-      console.log('Offline forecast:', this.forecastData);
-    }
+  saveCachedWeather(data: any) {
+    const minimal = {
+      name: data.name,
+      temp: data.main.temp,
+      description: data.weather[0].description,
+      icon: data.weather[0].icon,
+      unit: this.temperatureUnit,
+    };
+    localStorage.setItem('cachedWeatherData', JSON.stringify(minimal));
   }
 
 
